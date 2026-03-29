@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel — My Website</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/admin.css" />
+</head>
+<body class="admin-body">
+
+  <!-- ========== SIDEBAR ========== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <i class="fa-solid fa-shield-halved"></i>
+      </div>
+      <span class="sidebar-title">Admin Panel</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="#stats" class="sidebar-link active" data-tab="stats">
+        <i class="fa-solid fa-chart-bar"></i>
+        <span>Stats</span>
+      </a>
+      <a href="#profile" class="sidebar-link" data-tab="profile">
+        <i class="fa-solid fa-user-circle"></i>
+        <span>Profile</span>
+      </a>
+      <a href="#contact" class="sidebar-link" data-tab="contact">
+        <i class="fa-solid fa-address-book"></i>
+        <span>Contact</span>
+      </a>
+      <a href="#social" class="sidebar-link" data-tab="social">
+        <i class="fa-solid fa-share-nodes"></i>
+        <span>Social Links</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="btn btn-outline btn-sm" id="logoutBtn" onclick="handleLogout()">
+        <i class="fa-solid fa-right-from-bracket"></i> Logout
+      </button>
+      <a href="index.html" class="sidebar-visit-link" target="_blank">
+        <i class="fa-solid fa-arrow-up-right-from-square"></i> View Website
+      </a>
+    </div>
+  </aside>
+
+  <!-- Mobile overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+  <!-- ========== MAIN CONTENT ========== -->
+  <main class="admin-main" id="adminMain">
+
+    <!-- Topbar -->
+    <div class="admin-topbar">
+      <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <div class="topbar-info">
+        <span class="admin-greeting">Welcome, Admin</span>
+      </div>
+      <div class="topbar-user" id="topbarUser">
+        <i class="fa-solid fa-user"></i>
+        <span id="adminEmail">Loading...</span>
+      </div>
+    </div>
+
+    <!-- ───── GLOBAL TOAST ───── -->
+    <div class="toast" id="toast">
+      <i class="fa-solid fa-check-circle"></i>
+      <span id="toastMsg">Saved successfully!</span>
+    </div>
+
+    <!-- ========== TAB: STATS ========== -->
+    <div class="tab-content active" id="tab-stats">
+      <div class="page-header">
+        <h2 class="page-title">📊 Visitor Stats</h2>
+        <p class="page-desc">Overview of your website visitors.</p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">👁️</div>
+          <div class="stat-info">
+            <span class="stat-label">Total Visitors</span>
+            <span class="stat-value" id="adminVisitorCount">Loading...</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🔗</div>
+          <div class="stat-info">
+            <span class="stat-label">Social Links</span>
+            <span class="stat-value" id="adminSocialCount">—</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🟢</div>
+          <div class="stat-info">
+            <span class="stat-label">Status</span>
+            <span class="stat-value" style="color:var(--accent);font-size:1rem;">Live</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <p>🚧 <strong>Under Development:</strong> More analytics features will be added soon.</p>
+      </div>
+    </div>
+
+    <!-- ========== TAB: PROFILE ========== -->
+    <div class="tab-content" id="tab-profile">
+      <div class="page-header">
+        <h2 class="page-title">👤 Profile Management</h2>
+        <p class="page-desc">Update your public profile information.</p>
+      </div>
+
+      <div class="admin-card">
+        <!-- Profile Image Upload -->
+        <div class="form-section">
+          <h3 class="form-section-title">Profile Photo</h3>
+          <div class="image-upload-area" id="profileImageUploadArea">
+            <div class="image-preview-wrap">
+              <img
+                id="profileImagePreview"
+                src="https://via.placeholder.com/120x120/1a1a2e/e2e8f0?text=Photo"
+                alt="Profile Preview"
+                class="image-preview-img"
+              />
+            </div>
+            <div class="upload-controls">
+              <label class="btn btn-outline btn-sm upload-label" for="profileImageInput">
+                <i class="fa-solid fa-upload"></i> Choose Image
+              </label>
+              <input
+                type="file"
+                id="profileImageInput"
+                accept="image/*"
+                style="display:none;"
+                onchange="previewProfileImage(event)"
+              />
+              <p class="upload-hint">PNG, JPG, WEBP · Max 5MB</p>
+              <div class="upload-progress" id="profileUploadProgress" style="display:none;">
+                <div class="progress-bar">
+                  <div class="progress-fill" id="profileProgressFill"></div>
+                </div>
+                <span id="profileUploadStatus">Uploading...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Text Fields -->
+        <div class="form-section">
+          <h3 class="form-section-title">Profile Details</h3>
+
+          <div class="form-group">
+            <label class="form-label" for="adminName">Full Name</label>
+            <input type="text" id="adminName" class="form-input" placeholder="Your Name" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="adminBio">Bio</label>
+            <textarea id="adminBio" class="form-input form-textarea" rows="4" placeholder="Write something about yourself..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="adminLocation">Location</label>
+            <input type="text" id="adminLocation" class="form-input" placeholder="City, Country" />
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-primary" onclick="saveProfile()">
+            <i class="fa-solid fa-floppy-disk"></i>
+            <span id="saveProfileBtnText">Save Profile</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== TAB: CONTACT ========== -->
+    <div class="tab-content" id="tab-contact">
+      <div class="page-header">
+        <h2 class="page-title">📬 Contact Management</h2>
+        <p class="page-desc">Update your public contact details.</p>
+      </div>
+
+      <div class="admin-card">
+        <div class="form-group">
+          <label class="form-label" for="adminEmail2">
+            <i class="fa-solid fa-envelope"></i> Email Address
+          </label>
+          <input type="email" id="adminEmail2" class="form-input" placeholder="you@example.com" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="adminPhone">
+            <i class="fa-solid fa-phone"></i> Phone Number <span class="optional">(optional)</span>
+          </label>
+          <input type="tel" id="adminPhone" class="form-input" placeholder="+91 99999 99999" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="adminWhatsapp">
+            <i class="fa-brands fa-whatsapp"></i> WhatsApp Number <span class="optional">(with country code)</span>
+          </label>
+          <input type="tel" id="adminWhatsapp" class="form-input" placeholder="+919999999999" />
+          <p class="field-hint">Include country code without spaces or dashes. e.g. +919876543210</p>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-primary" onclick="saveContact()">
+            <i class="fa-solid fa-floppy-disk"></i> Save Contact
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== TAB: SOCIAL LINKS ========== -->
+    <div class="tab-content" id="tab-social">
+      <div class="page-header">
+        <h2 class="page-title">🔗 Social Links</h2>
+        <p class="page-desc">Add, edit, or remove your social media links.</p>
+      </div>
+
+      <!-- Add New Social -->
+      <div class="admin-card">
+        <h3 class="form-section-title">Add New Social Link</h3>
+
+        <div class="social-add-form">
+          <div class="form-group">
+            <label class="form-label">Platform Name</label>
+            <input type="text" id="newSocialName" class="form-input" placeholder="e.g. Instagram, YouTube, GitHub" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Profile URL</label>
+            <input type="url" id="newSocialUrl" class="form-input" placeholder="https://instagram.com/yourprofile" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Icon Image (PNG recommended)</label>
+            <label class="btn btn-outline btn-sm upload-label" for="newSocialIcon">
+              <i class="fa-solid fa-image"></i> Choose Icon
+            </label>
+            <input type="file" id="newSocialIcon" accept="image/*" style="display:none;" onchange="previewSocialIcon(event)" />
+            <div class="social-icon-preview-wrap" id="socialIconPreviewWrap" style="display:none;">
+              <img id="socialIconPreview" src="" alt="Icon preview" class="social-icon-preview" />
+              <span id="socialIconName">icon.png</span>
+            </div>
+            <div class="upload-progress" id="socialUploadProgress" style="display:none;">
+              <div class="progress-bar">
+                <div class="progress-fill" id="socialProgressFill"></div>
+              </div>
+              <span id="socialUploadStatus">Uploading...</span>
+            </div>
+          </div>
+
+          <button class="btn btn-primary" onclick="addSocialLink()">
+            <i class="fa-solid fa-plus"></i> Add Social Link
+          </button>
+        </div>
+      </div>
+
+      <!-- Existing Social Links List -->
+      <div class="admin-card">
+        <h3 class="form-section-title">Existing Social Links</h3>
+        <div id="socialLinksList">
+          <div class="loading-state">
+            <i class="fa-solid fa-spinner fa-spin"></i> Loading...
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main><!-- end admin-main -->
+
+  <!-- ========== FIREBASE SDKs ========== -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+  <script src="js/cloudinary.js"></script>
+  <script src="js/admin-firebase.js"></script>
+  <script src="js/admin-cloudinary.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
